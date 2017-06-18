@@ -1,0 +1,6 @@
+.sass-cache/*
+node_modules/*
+*.sublime-*
+*.log
+.DS_Store
+Thumbs.db
