@@ -16,4 +16,4 @@ To get automatic updates also install the [GitHub Updater](https://github.com/af
 
 ## License
 
-The code is available under the [MIT License](LICENSE.md).
+The code is available under the [GNU GPLv3 license](LICENSE.md).
