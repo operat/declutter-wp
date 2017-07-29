@@ -4,7 +4,7 @@ Plugin Name: Declutter WP
 Plugin URI: https://github.com/operat/declutter-wp
 GitHub Plugin URI: https://github.com/operat/declutter-wp
 Description: Remove unnecessary clutter from WordPress to improve security and performance.
-Version: 1.1
+Version: 1.2
 Author: Operat
 Author URI: https://www.operat.de
 License: GNU GPLv3
@@ -22,6 +22,8 @@ require_once 'DeclutterWP.PluginManager.php';
 
 add_action('init', array('DeclutterWP_PluginManager', 'init'));
 register_activation_hook(__FILE__, array('DeclutterWP_PluginManager', 'setDefaultOptions'));
+register_activation_hook(__FILE__, array('DeclutterWP_PluginManager', 'removeRewriteRules'));
+register_deactivation_hook( __FILE__, array('DeclutterWP_PluginManager', 'flushRewriteRules'));
 
 if (is_admin()) {
    require_once 'DeclutterWP.SettingsPage.php';

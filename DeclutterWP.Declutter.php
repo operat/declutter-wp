@@ -58,11 +58,33 @@ class DeclutterWP_Declutter {
    }
 
    private function disableOEmbed() {
+      // @var WP $wp
+      global $wp;
+
+      // Remove embed query var
+      $wp->public_query_vars = array_diff( $wp->public_query_vars, array('embed'));
+
+      // Remove REST API endpoint
+      remove_action('rest_api_init', 'wp_oembed_register_route');
+
+      // Turn off oEmbed auto discovery
+      add_filter('embed_oembed_discover', '__return_false');
+
+      // Don't filter oEmbed results.
+      remove_filter('oembed_dataparse', 'wp_filter_oembed_result', 10);
+
+      // Remove all embeds rewrite rules.
+      add_filter('rewrite_rules_array', array('DeclutterWP_Declutter', 'disableEmbedsRewrites'));
+
+      // Remove filter of oEmbed result before HTTP requests are made
+      remove_filter('pre_oembed_result', 'wp_filter_pre_oembed_result', 10);
+
       // Remove discovery link from header
       remove_action('wp_head', 'wp_oembed_add_discovery_links', 10);
 
-      // Remove scripts from footer
+      // Remove oembed scripts
       add_action('wp_enqueue_scripts', function () { wp_deregister_script('wp-embed'); });
+      remove_action('wp_head', 'wp_oembed_add_host_js');
 
       // Disable embeds in visual editor
       add_filter('tiny_mce_plugins', function ($plugins) {
@@ -84,7 +106,6 @@ class DeclutterWP_Declutter {
          unset($headers['X-Pingback']);
          return $headers;
       });
-
    }
 
    private function removeEmojiSupport() {
@@ -112,6 +133,16 @@ class DeclutterWP_Declutter {
       } else {
          return array();
       }
+   }
+
+   public static function disableEmbedsRewrites($rules) {
+      foreach ($rules as $rule => $rewrite) {
+         if (false !== strpos($rewrite, 'embed=true')) {
+            unset( $rules[ $rule ]);
+         }
+      }
+
+      return $rules;
    }
 
 }

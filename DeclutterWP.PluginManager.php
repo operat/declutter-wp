@@ -29,4 +29,14 @@ class DeclutterWP_PluginManager {
       return;
    }
 
+   public static function removeRewriteRules() {
+      add_filter('rewrite_rules_array', array('DeclutterWP_Declutter', 'disableEmbedsRewrites'));
+      flush_rewrite_rules(false);
+   }
+
+   public static function flushRewriteRules() {
+      remove_filter('rewrite_rules_array', array('DeclutterWP_Declutter', 'disableEmbedsRewrites'));
+      flush_rewrite_rules(false);
+   }
+
 }
